@@ -66,6 +66,25 @@ test -s specs/001-profitable-trading-decision-domain/data-model.md && echo OK
 
 If all five checks print `OK`, the spec is internally consistent and ready to anchor the next iteration.
 
+## Validation Evidence (recorded 2026-06-17, pre-merge)
+
+Observed results in the pre-merge environment:
+
+- **5/5 self-checks** above: `OK` for all lines.
+- **Real `[NEEDS CLARIFICATION]` markers in `specs/001-…/`**: `0`.
+- **Tasks in `specs/001-…/tasks.md`**: `0` open, `32` done.
+- **Constitution principles in `.specify/memory/constitution.md`**: `7` (I through VII).
+- **Constitution check items in `plan.md`**: `7`, all marked addressed.
+- **User-story cross-references**: US1, US2, US3, US4 each have a dedicated "cross-reference" subsection in this file (see "How to apply the spec" below).
+- **Constitution principle → spec coverage**:
+  - I (Risk-Adjusted Profitability): FR-014, FR-015, FR-017, Q1, Q4, SC-005, SC-008.
+  - II (Spec-Driven Delivery): `plan.md` phasing + `tasks.md` validation evidence.
+  - III (Futures-First, Multi-Asset): `TradingUniverse`, `WatchlistAsset`, FR-001, FR-002.
+  - IV (Traceable Decisions): `StrategyVersion`, `MarketContextSnapshot`, FR-011, FR-018, SC-001.
+  - V (Manual-First, Automation-Compatible): `Signal` vs `ManualTradeRecord` split, `ExecutionIntent` read-only, FR-006–FR-008, FR-016, Q2.
+  - VI (Learning Requires Evidence): `LearningObservation` read-only contract, `quality_label` taxonomy, FR-013.
+  - VII (Industrial Maintainability): modular entity graph, `data-model.md` invariants, no secrets in artifacts.
+
 ## Where to ask questions
 
 Open an issue. Use the spec number and the entity or section you are asking about. Examples:
