@@ -8,6 +8,24 @@
 
 **Input**: User description: "Define the foundational product domain for alpha-signal: a personal, industrial-grade AI-assisted crypto futures trading intelligence system governed by SDD/Spec Kit, operating on a dynamic multi-asset futures/perpetual futures watchlist, sending alerts first, recording real manual trades from day one, optimizing for high-quality risk-adjusted profitability, and remaining compatible with future supervised or automated execution."
 
+## Clarifications
+
+### Session 2026-06-17
+
+The following questions were raised in the 2026-06-15 planning conversation and resolved in the 2026-06-17 session before this update. They are recorded here so the spec, plan, and any later implementation remain consistent.
+
+- **Q1 — What counts as a "high-quality opportunity" in v1?**
+  **A**: A high-quality opportunity is one that simultaneously satisfies four hard gates: (1) **clear invalidation** — a stop-loss level is identifiable in the market structure, not arbitrary; (2) **positive expected R/R** at the proposed entry — the distance to the closest take-profit must be at least 1.5× the distance to the stop; (3) **structural evidence** — at least one named setup (liquidity sweep, BOS/CHOCH, stopping volume, order block + FVG, etc.) is present in the captured snapshot; (4) **no veto** — the opportunity is not in a regime flagged as `chop`, `manipulation probable`, `extreme volatility`, or `low liquidity`. Opportunities that fail any gate are classified as `rejected` with a `rejection_reason` and never become signals. Acceptance of "no-trade" as a valid outcome is encoded in FR-015.
+
+- **Q2 — How do we separate a system-generated signal from a real manual trade?**
+  **A**: A `Signal` is the system's recommendation, generated from a confirmed opportunity. A `ManualTradeRecord` is the trader's actual execution, which may be linked to a signal, modified from a signal, or completely independent. The link is optional but explicit. Both entities carry their own `entry`, `size`, `direction`, `instrument`, and timestamps. The `TradeOutcome` records both `theoretical_signal_result` (what would have happened if the signal had been followed exactly) and `actual_manual_result` (what really happened). This separation is encoded in FR-006, FR-007, and FR-008, and validated by SC-003.
+
+- **Q3 — What are the minimum fields the journal must capture from day one?**
+  **A**: From the very first trade, every record — whether signal, manual trade, or outcome — MUST capture at least: `id` (deterministic ULID/UUID), `instrument` (canonical symbol), `direction` (`long`/`short`), `entry_price`, `entry_timestamp` (UTC), `stop_loss`, `take_profit_plan[]`, `risk_per_unit`, `size_or_normalized_exposure`, `fees_paid` (when known, otherwise `null`), `regime` (one of the named regimes), `strategy_version` (reference to the scoring or rule version that produced the decision), and `notes`. Outcomes additionally require `exit_price`, `exit_timestamp`, `realized_r_multiple`, `max_favorable_excursion`, `max_adverse_excursion`, and at least one `quality_label` (thesis, timing, entry, stop, target, execution, or regime). Optional but encouraged: `screenshot_path` and `trigger_evidence[]`. This is the v1 journal minimum; future specs may add fields but cannot remove any of these.
+
+- **Q4 — What does "profitability" mean in v1?**
+  **A**: Progressive. v1 uses **R-multiple** as the primary unit (realized R, average R, expectancy in R, profit factor in R). PnL in quote currency is recorded whenever fees and size are available, but R is the canonical metric for selection, ranking, calibration, and learning because it is normalized across instruments, sizes, and leverage. USD-quote PnL becomes a first-class reporting metric in a later spec once reliable fee and position data are flowing. This is encoded in FR-014, FR-017, and SC-008.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Evaluate high-quality trading opportunities (Priority: P1)
