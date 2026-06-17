@@ -6,7 +6,7 @@ This quickstart is for anyone reading the spec — a future contributor, the nex
 
 ## What this feature is
 
-This is the **product foundation** for alpha-signal. It defines the domain vocabulary and the scope guards, not the runtime system. There is no code to run, no API to call, no data to ingest. If you are looking for runtime code, you are in the wrong place; check [plan.md](./plan.md) for the roadmap to the next spec (P1: data layer).
+This is the **product foundation** for crypto-alpha. It defines the domain vocabulary and the scope guards, not the runtime system. There is no code to run, no API to call, no data to ingest. If you are looking for runtime code, you are in the wrong place; check [plan.md](./plan.md) for the roadmap to the next spec (P1: data layer).
 
 ## What to read, in order
 

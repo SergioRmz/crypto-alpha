@@ -1,11 +1,11 @@
-# alpha-signal
+# crypto-alpha
 
 > Personal, industrial-grade AI-assisted crypto futures trading intelligence.
-> This repository hosts the project; the canonical project name is **alpha-signal**.
+> This repository hosts the project; the canonical project name is **crypto-alpha**.
 
 ## Purpose
 
-alpha-signal exists to improve the quality of personal crypto futures trading decisions. It is not a signal-spam bot. Every feature is evaluated against its contribution to risk-adjusted profitability, trade quality, selectivity, and loss containment.
+crypto-alpha exists to improve the quality of personal crypto futures trading decisions. It is not a signal-spam bot. Every feature is evaluated against its contribution to risk-adjusted profitability, trade quality, selectivity, and loss containment.
 
 The system observes the market, detects structured setups, evaluates confluence, calculates risk plans, emits alerts, tracks real manual trades, and feeds outcomes back into the model — all under a strict governance loop that distinguishes **what the system recommended** from **what the trader actually did**.
 
@@ -34,7 +34,7 @@ Crypto futures and perpetual futures involve substantial risk and may not be sui
 
 ## Methodology
 
-alpha-signal is governed by **Spec-Driven Development (SDD) using Spec Kit**. Every iteration follows the same loop:
+crypto-alpha is governed by **Spec-Driven Development (SDD) using Spec Kit**. Every iteration follows the same loop:
 
 1. **Specify** the scope, constraints, and acceptance criteria in `specs/NNN-…/spec.md`.
 2. **Clarify** ambiguities before planning when they affect trading behavior, risk, data semantics, learning, or future execution.
@@ -102,4 +102,4 @@ These targets are documented in the constitution to constrain future specs, not 
 
 ---
 
-**alpha-signal** — A disciplined, evidence-backed, spec-driven approach to personal crypto futures trading intelligence.
+**crypto-alpha** — A disciplined, evidence-backed, spec-driven approach to personal crypto futures trading intelligence.

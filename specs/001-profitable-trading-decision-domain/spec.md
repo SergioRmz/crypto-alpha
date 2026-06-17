@@ -6,7 +6,7 @@
 
 **Status**: Draft
 
-**Input**: User description: "Define the foundational product domain for alpha-signal: a personal, industrial-grade AI-assisted crypto futures trading intelligence system governed by SDD/Spec Kit, operating on a dynamic multi-asset futures/perpetual futures watchlist, sending alerts first, recording real manual trades from day one, optimizing for high-quality risk-adjusted profitability, and remaining compatible with future supervised or automated execution."
+**Input**: User description: "Define the foundational product domain for crypto-alpha: a personal, industrial-grade AI-assisted crypto futures trading intelligence system governed by SDD/Spec Kit, operating on a dynamic multi-asset futures/perpetual futures watchlist, sending alerts first, recording real manual trades from day one, optimizing for high-quality risk-adjusted profitability, and remaining compatible with future supervised or automated execution."
 
 ## Clarifications
 
@@ -30,7 +30,7 @@ The following questions were raised in the 2026-06-15 planning conversation and 
 
 ### User Story 1 - Evaluate high-quality trading opportunities (Priority: P1)
 
-As the trader, I want alpha-signal to represent market opportunities as structured, comparable trading decisions so that I can prioritize the best risk-adjusted futures opportunities across a dynamic crypto watchlist instead of reacting to isolated alerts.
+As the trader, I want crypto-alpha to represent market opportunities as structured, comparable trading decisions so that I can prioritize the best risk-adjusted futures opportunities across a dynamic crypto watchlist instead of reacting to isolated alerts.
 
 **Why this priority**: Profitability depends on selecting the best opportunities and avoiding weak ones. The domain must establish opportunity quality before any detector, dashboard, or alert channel is implemented.
 
@@ -46,7 +46,7 @@ As the trader, I want alpha-signal to represent market opportunities as structur
 
 ### User Story 2 - Separate signal recommendation from real manual trade execution (Priority: P1)
 
-As the trader, I want alpha-signal to distinguish system-generated signals from my actual manual trades so that learning reflects what the system recommended, what I actually did, and what the market outcome was.
+As the trader, I want crypto-alpha to distinguish system-generated signals from my actual manual trades so that learning reflects what the system recommended, what I actually did, and what the market outcome was.
 
 **Why this priority**: Real profitability cannot be learned from alerts alone. Manual execution deviations must be captured from the beginning to avoid corrupting system performance metrics.
 
@@ -62,7 +62,7 @@ As the trader, I want alpha-signal to distinguish system-generated signals from 
 
 ### User Story 3 - Track outcome quality for learning (Priority: P1)
 
-As the trader, I want every completed signal or manual trade to produce a learning-ready outcome so that alpha-signal can improve based on evidence rather than impressions.
+As the trader, I want every completed signal or manual trade to produce a learning-ready outcome so that crypto-alpha can improve based on evidence rather than impressions.
 
 **Why this priority**: Auto-learning cannot be trustworthy without accurate outcome semantics and post-trade labels.
 

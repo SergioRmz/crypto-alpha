@@ -4,11 +4,11 @@
 
 **Input**: Feature specification from `specs/001-profitable-trading-decision-domain/spec.md` (with clarifications resolved on 2026-06-17).
 
-**Note**: This plan documents the conceptual architecture, domain contracts, and implementation phasing for the alpha-signal product foundation. It intentionally does not introduce runtime code or vendor choices; those land in later specs gated by this plan.
+**Note**: This plan documents the conceptual architecture, domain contracts, and implementation phasing for the crypto-alpha product foundation. It intentionally does not introduce runtime code or vendor choices; those land in later specs gated by this plan.
 
 ## Summary
 
-Define the conceptual product domain for alpha-signal: a personal, AI-assisted crypto futures trading intelligence system that produces structured `Opportunity` candidates, confirms them into `Signal` alerts, separates them from `ManualTradeRecord` execution, captures `TradeOutcome` for learning, and feeds `LearningObservation` back into a versioned scoring loop. The plan locks the entity graph, the data contracts, the regime taxonomy, the quality gates, and the implementation phasing so future specs can build runtime data ingestion, scoring, alerts, and learning without re-opening foundational decisions.
+Define the conceptual product domain for crypto-alpha: a personal, AI-assisted crypto futures trading intelligence system that produces structured `Opportunity` candidates, confirms them into `Signal` alerts, separates them from `ManualTradeRecord` execution, captures `TradeOutcome` for learning, and feeds `LearningObservation` back into a versioned scoring loop. The plan locks the entity graph, the data contracts, the regime taxonomy, the quality gates, and the implementation phasing so future specs can build runtime data ingestion, scoring, alerts, and learning without re-opening foundational decisions.
 
 ## Technical Context
 
@@ -92,7 +92,7 @@ docs/
 
 ## Domain Phasing
 
-The implementation of alpha-signal is deliberately staggered into phases. Each phase produces its own spec, plan, tasks, and pull request, and is gated by the constitution and this spec.
+The implementation of crypto-alpha is deliberately staggered into phases. Each phase produces its own spec, plan, tasks, and pull request, and is gated by the constitution and this spec.
 
 | Phase | Spec focus | Adds | Consumes |
 |---|---|---|---|
