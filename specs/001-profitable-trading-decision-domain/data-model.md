@@ -2,7 +2,7 @@
 
 **Date**: 2026-06-17 | **Spec**: [spec.md](./spec.md) | **Plan**: [plan.md](./plan.md)
 
-This document describes the conceptual entity graph for the alpha-signal product domain. Concrete JSON Schemas will be drafted in P1; this file is the authoritative reference for field semantics and invariants.
+This document describes the conceptual entity graph for the crypto-alpha product domain. Concrete JSON Schemas will be drafted in P1; this file is the authoritative reference for field semantics and invariants.
 
 ## Entity graph
 

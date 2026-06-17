@@ -1,15 +1,15 @@
-# alpha-signal Constitution
+# crypto-alpha Constitution
 
 ## Core Principles
 
 ### I. Risk-Adjusted Profitability Over Signal Volume
-alpha-signal exists to improve personal crypto futures trading decisions, not to maximize the number of alerts. Every feature MUST be evaluated by its contribution to risk-adjusted profitability, trade quality, selectivity, and loss containment. A valid system outcome includes choosing not to trade. Win rate alone is insufficient; decisions MUST be measured with expectancy, average R, profit factor, drawdown, fees, slippage, execution quality, and capital efficiency where applicable.
+crypto-alpha exists to improve personal crypto futures trading decisions, not to maximize the number of alerts. Every feature MUST be evaluated by its contribution to risk-adjusted profitability, trade quality, selectivity, and loss containment. A valid system outcome includes choosing not to trade. Win rate alone is insufficient; decisions MUST be measured with expectancy, average R, profit factor, drawdown, fees, slippage, execution quality, and capital efficiency where applicable.
 
 ### II. Spec-Driven, Iteration-Bounded Delivery
 The project MUST be governed through Spec-Driven Development using Spec Kit. Each iteration SHOULD map to a small, well-defined spec that can move through clarification, plan, tasks, implementation, and verification. Code serves the specification, not the reverse. No material capability may be implemented without a corresponding spec, acceptance criteria, and validation path. Specs MUST distinguish scope, non-scope, assumptions, risks, and measurable success criteria.
 
 ### III. Futures-First, Multi-Asset Opportunity Intelligence
-alpha-signal is designed for crypto futures and perpetual futures across a dynamic multi-asset watchlist, including major assets and altcoins when liquidity, risk, and signal quality justify inclusion. The system MUST model derivatives-specific context such as leverage, funding, open interest, liquidations, mark price vs last price, contract constraints, fees, slippage, and liquidation risk as the product matures. The system MUST optimize for high-quality opportunities over fixed-symbol monitoring; BTC-only assumptions are prohibited unless explicitly scoped for a temporary test fixture.
+crypto-alpha is designed for crypto futures and perpetual futures across a dynamic multi-asset watchlist, including major assets and altcoins when liquidity, risk, and signal quality justify inclusion. The system MUST model derivatives-specific context such as leverage, funding, open interest, liquidations, mark price vs last price, contract constraints, fees, slippage, and liquidation risk as the product matures. The system MUST optimize for high-quality opportunities over fixed-symbol monitoring; BTC-only assumptions are prohibited unless explicitly scoped for a temporary test fixture.
 
 ### IV. Traceable Decisions and Auditable Intelligence
 Every signal, trade decision, confidence score, risk plan, and learning adjustment MUST be explainable from stored evidence. The system MUST preserve the market snapshot, detected triggers, scoring inputs, risk assumptions, generated alert, manual execution record, and outcome. AI-generated analysis may summarize, explain, or compare evidence, but MUST NOT invent market facts or become the sole authority for trading decisions. Confidence scores MUST be decomposable and eventually calibratable against realized outcomes.
@@ -21,7 +21,7 @@ The initial product sends alerts and records real manual trades from day one. It
 Self-learning MUST be implemented as a controlled feedback loop, not silent mutation. Strategy weights, scoring logic, model versions, and learning rules MUST be versioned and tied to the data that justified them. Learning changes MUST be evaluated against historical and forward results, checked for overfitting, and reversible. Post-trade analysis MUST distinguish bad thesis, bad timing, bad entry, bad stop, bad target, execution deviation, and market regime mismatch.
 
 ### VII. Industrial Maintainability for Personal Use
-Although alpha-signal is a personal product, it MUST be engineered as an industrial-grade system: modular, testable, observable, secure, reproducible, and maintainable. Secrets MUST NOT be committed. Data schemas and migrations MUST be deliberate. External integrations MUST be isolated behind adapters. Runtime behavior MUST be logged with enough structure to debug signal generation, alert delivery, tracking, and learning outcomes.
+Although crypto-alpha is a personal product, it MUST be engineered as an industrial-grade system: modular, testable, observable, secure, reproducible, and maintainable. Secrets MUST NOT be committed. Data schemas and migrations MUST be deliberate. External integrations MUST be isolated behind adapters. Runtime behavior MUST be logged with enough structure to debug signal generation, alert delivery, tracking, and learning outcomes.
 
 ## Product Constraints
 

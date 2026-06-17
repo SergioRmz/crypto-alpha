@@ -10,7 +10,7 @@ This document captures the domain research and design precedents that informed t
 
 Most "crypto signal" products treat each alert as an isolated event. That design choice makes post-hoc learning almost impossible: you cannot tell whether a loss was caused by a bad thesis, a bad entry, or a bad stop, because the alert does not carry the evidence needed to distinguish them.
 
-alpha-signal separates **opportunity** (what the market offered), **signal** (what the system recommended), **manual trade** (what the trader actually did), and **outcome** (what the market did) so each can be evaluated and the gaps between them can be measured.
+crypto-alpha separates **opportunity** (what the market offered), **signal** (what the system recommended), **manual trade** (what the trader actually did), and **outcome** (what the market did) so each can be evaluated and the gaps between them can be measured.
 
 ### Opportunities must be comparable across assets
 
@@ -43,7 +43,7 @@ A common failure mode in signal products is forcing the model to "always have an
 
 - **Spec-Driven Development with Spec Kit** is the project's chosen governance model and is reflected in `.specify/`.
 - **Constitution-first design** (a la Amazon-style "working backwards" or project constitutions in OSS) provides the principles every later spec must satisfy.
-- **Event-sourced trading journals** in the OSS trading space typically follow the opportunity/signal/trade/outcome split (sometimes called "thesis → decision → execution → outcome"). alpha-signal follows that lineage and makes the version reference explicit.
+- **Event-sourced trading journals** in the OSS trading space typically follow the opportunity/signal/trade/outcome split (sometimes called "thesis → decision → execution → outcome"). crypto-alpha follows that lineage and makes the version reference explicit.
 - **Versioned strategy weights** are a known requirement for any system that wants to detect when a recent change is responsible for a recent improvement. Without versioned weights, every backtest is contaminated by unrecorded rule changes.
 
 ## Open research questions (deferred to later specs)
