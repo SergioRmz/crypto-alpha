@@ -2,7 +2,7 @@
 
 **Branch**: `003-scoring-engine-v1` | **Date**: 2026-06-21 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `specs/003-scoring-engine-v1/spec.md` (with 18 clarifications resolved in-session on 2026-06-21). This is the P1 → P2 handoff defined in `specs/001-profitable-trading-decision-domain/plan.md` (Domain Phasing table, P2 row), consuming the P1 data layer as test input.
+**Input**: Feature specification from `specs/003-scoring-engine-v1/spec.md` (with 18 clarifications resolved in-session on 2026-06-21). This is the P1 → P2 handoff defined in `specs/001-profitable-trading-decision-domain/plan.md` (Domain Phasing table, P2 row), consuming the P1 data layer (delivered in `specs/002-data-layer/`) as test input.
 
 **Note**: This plan documents the first runtime scoring engine for crypto-alpha. It introduces NumPy-based math, a property-based test suite, and a CLI. It does NOT introduce live data, signals, alerts, manual trade journal, outcomes, or learning.
 

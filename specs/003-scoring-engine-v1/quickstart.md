@@ -96,8 +96,8 @@ test -s specs/003-scoring-engine-v1/spec.md && echo OK
 # 2. The clarifications are recorded
 grep -q "Session 2026-06-21" specs/003-scoring-engine-v1/spec.md && echo OK
 
-# 3. The plan references the P1 handoff
-grep -q "specs/002-data-layer/plan.md" specs/003-scoring-engine-v1/plan.md && echo OK
+# 3. The plan references the P1 handoff (spec-002 dir)
+grep -q "specs/002-data-layer" specs/003-scoring-engine-v1/plan.md && echo OK
 
 # 4. The data model is reachable
 test -s specs/003-scoring-engine-v1/data-model.md && echo OK
