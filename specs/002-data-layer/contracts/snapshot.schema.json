@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-alpha.local/schemas/snapshot.schema.json",
+  "title": "MarketContextSnapshot",
+  "description": "Point-in-time market state for one crypto futures or perpetual futures instrument. One snapshot = one (canonical_symbol, venue, captured_at) triple, carrying inline per-timeframe data, derivatives context, and evidence references. P1 schema version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "canonical_symbol",
+    "venue",
+    "captured_at",
+    "instrument_type",
+    "regime",
+    "timeframes",
+    "derivatives_context",
+    "evidence_refs",
+    "disclaimer_present"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semver of the schema this snapshot conforms to."
+    },
+    "canonical_symbol": {
+      "type": "string",
+      "pattern": "^[A-Z0-9]{4,20}(@[a-z0-9_-]{2,32})?$",
+      "description": "BASEQUOTE (e.g. BTCUSDT), optionally with @venue suffix (e.g. BTCUSDT@binance)."
+    },
+    "venue": {
+      "type": "string",
+      "enum": [
+        "binance",
+        "bybit",
+        "okx",
+        "kraken",
+        "coinbase",
+        "deribit",
+        "bitfinex",
+        "venue_agnostic"
+      ],
+      "description": "Exchange identifier. 'venue_agnostic' is used when the snapshot is not tied to a specific exchange."
+    },
+    "captured_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$",
+      "description": "ISO 8601 UTC with Z suffix. When the snapshot was captured."
+    },
+    "instrument_type": {
+      "type": "string",
+      "enum": ["perpetual", "futures", "options"],
+      "description": "Derivative instrument type. P1 fixtures use 'perpetual'."
+    },
+    "regime": {
+      "type": "string",
+      "enum": [
+        "trend_up",
+        "trend_down",
+        "range",
+        "chop",
+        "manipulation_probable",
+        "extreme_volatility",
+        "low_liquidity",
+        "unknown"
+      ],
+      "description": "Strict enum of 8 market regimes. P2 (scoring engine) is the owner of regime classification; P1 fixtures may use 'unknown'."
+    },
+    "timeframes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["1m", "5m", "15m", "1h", "4h", "1d"],
+      "properties": {
+        "1m": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] },
+        "5m": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] },
+        "15m": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] },
+        "1h": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] },
+        "4h": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] },
+        "1d": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/TimeframeBar" }] }
+      },
+      "description": "Per-timeframe current bar. All 6 keys MUST be present; values MAY be null when the timeframe is not yet available or the data is stale."
+    },
+    "derivatives_context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "funding_rate",
+        "open_interest",
+        "mark_price",
+        "last_price"
+      ],
+      "properties": {
+        "funding_rate": {
+          "type": ["string", "null"],
+          "pattern": "^-?[0-9]+(\\.[0-9]+)?$",
+          "description": "Current funding rate as a decimal (e.g. '0.0001' for 1 bps). null when venue does not provide funding or data is unavailable."
+        },
+        "funding_rate_next_at_utc": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$",
+          "description": "ISO 8601 UTC. Next funding event. null when not provided."
+        },
+        "open_interest": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Open interest in contract units. null when unavailable."
+        },
+        "open_interest_usd": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Open interest in USD. null when unavailable."
+        },
+        "mark_price": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Mark price used for margining. null when unavailable."
+        },
+        "last_price": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Last traded price. null when the venue has not reported a trade in the snapshot window."
+        },
+        "mark_last_spread_bps": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "|mark - last| / last * 10000. null when either mark or last is null."
+        },
+        "liquidations_24h_long_usd": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "24h liquidations on the long side, USD. null when unavailable."
+        },
+        "liquidations_24h_short_usd": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "24h liquidations on the short side, USD. null when unavailable."
+        }
+      },
+      "description": "Derivatives-specific context. Fields are required-but-nullable (key MUST be present, value MAY be null)."
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Non-empty array of pointers to captured evidence. P1 fixtures reference their own filename."
+    },
+    "disclaimer_present": {
+      "const": true,
+      "description": "MUST be true. Constitution I requires a non-advice disclaimer on every signal and snapshot. The disclaimer text is rendered in P3, not stored in the snapshot."
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Free text. MUST NOT contain advisory language (no buy/sell/hold, no target price, no rating, no recommendation, no forecast)."
+    }
+  },
+  "$defs": {
+    "TimeframeBar": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "bar_start_utc",
+        "bar_end_utc"
+      ],
+      "properties": {
+        "open": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+        "high": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+        "low": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+        "close": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+        "volume": { "type": "string", "pattern": "^[0-9]+(\\.[0-9]+)?$" },
+        "realized_volatility_pct": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "Realized volatility (annualized) as a percentage. Window: 20 periods of this timeframe. null when the input series is too short to compute."
+        },
+        "atr_pct": {
+          "type": ["string", "null"],
+          "pattern": "^[0-9]+(\\.[0-9]+)?$",
+          "description": "ATR / price * 100. null when the input series is too short to compute."
+        },
+        "bar_start_utc": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+        },
+        "bar_end_utc": {
+          "type": "string",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+        }
+      }
+    }
+  }
+}
