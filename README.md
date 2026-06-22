@@ -64,6 +64,7 @@ Code serves the specification, never the reverse. No material capability may be 
 │       ├── contracts/          # JSON Schemas
 │       └── fixtures/           # Deterministic sample data
 ├── scripts/
+│   ├── scoring/                # P2 scoring engine (math + CLI)
 │   └── validation/             # Local validators
 ├── pyproject.toml              # Python project metadata (jsonschema dep)
 ├── AGENTS.md                   # Agent operating instructions
@@ -89,8 +90,9 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
 | Constitution v1.0.0 | Ratified 2026-06-15 |
 | Spec 001 `profitable-trading-decision-domain` | Merged (PR #1) |
 | Spec 002 `data-layer` | Merged (PR #3) |
-| Runtime code | Validator + 3 JSON Schemas + 3 fixtures shipped in spec 002 |
-| CI / validation scripts | Local validator only (no CI yet) |
+| Spec 003 `scoring-engine-v1` | Draft PR open (branch `003-scoring-engine-v1`) |
+| Runtime code | Scoring engine + 3 P2 schemas + 3 P2 fixtures + 70-test pytest suite |
+| CI / validation scripts | Local validators only (no CI yet) |
 | Remote | `https://github.com/SergioRmz/crypto-alpha.git` |
 
 ## Working With This Repository
@@ -105,6 +107,13 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
   python scripts/validation/validate_data_layer.py
   ```
   Expected: 3 `OK:` lines, exit 0.
+- For scoring engine work (spec 003), use the scorer and the test suite:
+  ```bash
+  uv pip install -e ".[dev]"
+  python scripts/scoring/score.py score <snapshot.json> <output.json>
+  python scripts/validation/validate_scoring.py   # validates scored-* fixtures
+  pytest                                              # 70/70 expected to pass
+  ```
 
 ## Future Stack (planned, not implemented)
 
