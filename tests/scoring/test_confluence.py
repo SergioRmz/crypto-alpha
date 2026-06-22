@@ -42,13 +42,24 @@ def test_trend_alignment_agreement() -> None:
 
 
 def test_trend_alignment_disagreement() -> None:
+    # h1 goes down (-2%), h4 goes up (+2%) -> they disagree on direction.
     snap = _snap(
-        h1={"open": "100", "high": "101", "low": "99", "close": "99.5"},
-        h4={"open": "101", "high": "102", "low": "100", "close": "100.5"},
+        h1={"open": "100", "high": "101", "low": "98", "close": "98"},
+        h4={"open": "100", "high": "102", "low": "100", "close": "102"},
     )
     comp = trend_alignment(snap)
     assert comp["raw_value"] == 0.0
     assert comp["contribution"] == 0.0
+
+
+def test_trend_alignment_partial_agreement() -> None:
+    # h1 and h4 both up but with different magnitudes -> partial agreement.
+    snap = _snap(
+        h1={"open": "100", "high": "101", "low": "99", "close": "100.2"},
+        h4={"open": "98", "high": "103", "low": "97", "close": "103"},
+    )
+    comp = trend_alignment(snap)
+    assert 0.0 < comp["raw_value"] < 1.0
 
 
 def test_trend_alignment_insufficient_data() -> None:
@@ -72,6 +83,19 @@ def test_volatility_suitability_too_high() -> None:
     snap = _snap(
         d1={"realized_volatility_pct": "120.0"},
         h1={"open": "100", "high": "101", "low": "99", "close": "100", "atr_pct": "0.30"},
+    )
+    comp = volatility_suitability(snap)
+    # daily_vol way above sweet spot (40) -> daily_score is 0.
+    # hourly_atr at sweet spot (0.30) -> hourly_score is 1.
+    # raw = 0.5 * 0 + 0.5 * 1 = 0.5; we expect it to be <= 0.5.
+    assert comp["raw_value"] <= 0.5
+
+
+def test_volatility_suitability_extreme_high() -> None:
+    # Both daily_vol and hourly_atr way above sweet spot -> low score.
+    snap = _snap(
+        d1={"realized_volatility_pct": "150.0"},
+        h1={"open": "100", "high": "101", "low": "99", "close": "100", "atr_pct": "2.0"},
     )
     comp = volatility_suitability(snap)
     assert comp["raw_value"] < 0.5

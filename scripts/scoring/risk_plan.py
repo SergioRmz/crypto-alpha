@@ -28,9 +28,16 @@ from __future__ import annotations
 
 import numpy as np
 
-from scripts.scoring.decimal_format import price as fmt_price
-from scripts.scoring.decimal_format import r_multiple
-from scripts.scoring.strategy_version import (
+# Make the package importable when running as a script.
+import sys
+from pathlib import Path
+_PKG_PARENT = Path(__file__).resolve().parents[2]
+if str(_PKG_PARENT) not in sys.path:
+    sys.path.insert(0, str(_PKG_PARENT))
+
+from scripts.scoring.decimal_format import price as fmt_price  # noqa: E402
+from scripts.scoring.decimal_format import r_multiple  # noqa: E402
+from scripts.scoring.strategy_version import (  # noqa: E402
     ATR_STOP_MULTIPLIER,
     DEFAULT_HOLDING_PERIOD,
     TP_R_MULTIPLES,

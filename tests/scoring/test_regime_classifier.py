@@ -34,30 +34,56 @@ def test_reclassify_extreme_volatility_from_daily_vol() -> None:
 
 
 def test_reclassify_choppy_when_timeframes_overlap_heavily() -> None:
+    # h1 range: 99-101 (2 wide). h4 range: 99-100.5 (1.5 wide).
+    # Overlap: 99-100.5 (1.5). h1_range = 2. ratio = 1.5/2 = 0.75.
+    # We use a setup that gives ratio > 0.85 (the v1 threshold).
     snap = _snap(
         "unknown",
-        h1={"open": "100", "high": "101", "low": "99", "close": "100.0"},
+        h1={"open": "100", "high": "100.1", "low": "99.0", "close": "100.0"},
         h4={"open": "99.5", "high": "100.5", "low": "99.0", "close": "100.2"},
         d1={"realized_volatility_pct": "40.0"},
     )
     assert reclassify(snap) == "chop"
 
 
+def test_reclassify_trust_input_when_not_unknown() -> None:
+    # When input regime is a non-unknown value (e.g. trend_up), the
+    # classifier trusts it. Re-classification only kicks in for unknown.
+    snap = _snap(
+        "trend_up",
+        h1={"open": "100", "high": "101", "low": "99", "close": "100.5"},
+        h4={"open": "98", "high": "102", "low": "97", "close": "101"},
+    )
+    assert reclassify(snap) == "trend_up"
+
+
+def test_reclassify_trust_range_input() -> None:
+    snap = _snap(
+        "range",
+        h1={"open": "100", "high": "101", "low": "99", "close": "100.5"},
+        h4={"open": "98", "high": "102", "low": "97", "close": "101"},
+    )
+    assert reclassify(snap) == "range"
+
+
 def test_reclassify_trend_up_when_both_bars_up() -> None:
+    # h1 must NOT be fully nested inside h4 (else it triggers chop).
+    # Make h1 extend below h4_low: h1 low=80 (below h4 low=85).
     snap = _snap(
         "unknown",
-        h1={"open": "100", "high": "102", "low": "99", "close": "101"},
-        h4={"open": "98", "high": "103", "low": "97", "close": "101.5"},
+        h1={"open": "90", "high": "120", "low": "80", "close": "115"},
+        h4={"open": "95", "high": "110", "low": "85", "close": "108"},
         d1={"realized_volatility_pct": "40.0"},
     )
     assert reclassify(snap) == "trend_up"
 
 
 def test_reclassify_trend_down_when_both_bars_down() -> None:
+    # h1 extends above h4_high to avoid being fully nested.
     snap = _snap(
         "unknown",
-        h1={"open": "101", "high": "102", "low": "99", "close": "100"},
-        h4={"open": "103", "high": "103.5", "low": "100", "close": "100.5"},
+        h1={"open": "120", "high": "125", "low": "95", "close": "97"},
+        h4={"open": "110", "high": "115", "low": "100", "close": "102"},
         d1={"realized_volatility_pct": "40.0"},
     )
     assert reclassify(snap) == "trend_down"
@@ -74,8 +100,11 @@ def test_reclassify_range_when_neutral() -> None:
 
 
 def test_reclassify_handles_missing_data() -> None:
+    # Veto regimes are trusted; everything else falls back when
+    # there is no data to re-classify from.
+    assert reclassify({"regime": "chop", "timeframes": {}}) == "chop"
+    assert reclassify({"regime": "extreme_volatility", "timeframes": {}}) == "extreme_volatility"
     assert reclassify({"regime": "unknown", "timeframes": {}}) == "range"
-    assert reclassify({"regime": "trend_up", "timeframes": {}}) == "trend_up"
 
 
 def test_is_vetoed() -> None:

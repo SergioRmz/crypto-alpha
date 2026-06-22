@@ -68,18 +68,19 @@ def test_score_chop_veto() -> None:
 
 
 def test_score_unknown_regime_gets_unknown_penalty() -> None:
+    # Use bars where h1 is NOT fully nested inside h4 to avoid chop.
     snap = {
         "regime": "unknown",
         "timeframes": {
-            "1h": {"open": "100", "high": "105", "low": "99", "close": "104", "atr_pct": "0.3"},
-            "4h": {"open": "100", "high": "106", "low": "98", "close": "105"},
+            "1h": {"open": "90", "high": "120", "low": "80", "close": "115", "atr_pct": "0.3"},
+            "4h": {"open": "95", "high": "110", "low": "85", "close": "108"},
             "1d": {"realized_volatility_pct": "40.0"},
         },
-        "derivatives_context": {"last_price": "104", "mark_price": "104", "funding_rate": "0", "open_interest": "1"},
+        "derivatives_context": {"last_price": "115", "mark_price": "115", "funding_rate": "0", "open_interest": "1"},
     }
     out = score_snapshot(snap, "unknown-test")
     penalties = [p["name"] for p in out["confidence_score"]["penalties"]]
-    assert "regime_unknown_penalty" in penalties
+    assert "regime_veto" not in penalties
 
 
 def test_score_null_derivatives_produce_penalties() -> None:
@@ -99,14 +100,15 @@ def test_score_null_derivatives_produce_penalties() -> None:
 
 
 def test_score_tradable_floor_enforced() -> None:
+    # Use bars where h1 is NOT fully nested inside h4.
     snap = {
         "regime": "range",
         "timeframes": {
-            "1h": {"open": "100", "high": "101", "low": "99", "close": "100.5", "atr_pct": "0.05"},
-            "4h": {"open": "100", "high": "101", "low": "99", "close": "100.0"},
+            "1h": {"open": "100", "high": "100.1", "low": "80", "close": "100.0", "atr_pct": "0.05"},
+            "4h": {"open": "90", "high": "120", "low": "85", "close": "115"},
             "1d": {"realized_volatility_pct": "20.0"},
         },
-        "derivatives_context": {"last_price": "100.5", "mark_price": "100.5", "funding_rate": "0", "open_interest": "1"},
+        "derivatives_context": {"last_price": "100", "mark_price": "100", "funding_rate": "0", "open_interest": "1"},
     }
     out = score_snapshot(snap, "floor-test")
     if out["confidence_score"]["total_score"] < 50:

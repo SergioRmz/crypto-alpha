@@ -19,9 +19,16 @@ The output is used downstream to:
 """
 from __future__ import annotations
 
-import numpy as np
+# Make the package importable when running as a script.
+import sys
+from pathlib import Path
+_PKG_PARENT = Path(__file__).resolve().parents[2]
+if str(_PKG_PARENT) not in sys.path:
+    sys.path.insert(0, str(_PKG_PARENT))
 
-from scripts.scoring.strategy_version import EXTREME_VOLATILITY_THRESHOLD
+import numpy as np  # noqa: E402
+
+from scripts.scoring.strategy_version import EXTREME_VOLATILITY_THRESHOLD  # noqa: E402
 
 VETO_REGIMES = frozenset(
     {"chop", "manipulation_probable", "extreme_volatility", "low_liquidity"}
@@ -39,7 +46,13 @@ def _get_daily_vol(snapshot: dict) -> float | None:
 
 
 def _price_choppy(snapshot: dict) -> bool:
-    """True when 1h and 4h bars overlap heavily (choppy)."""
+    """True when 1h and 4h bars overlap very heavily (choppy).
+
+    Threshold: overlap/h1_range > 0.85. A perfectly nested h1 inside h4
+    counts as choppy; partial overlap (e.g. h1 straddle across h4) does
+    not. This is a v1 simplification; a future spec may use a more
+    sophisticated chop detector (e.g. fractal dimension).
+    """
     tf_1h = snapshot.get("timeframes", {}).get("1h")
     tf_4h = snapshot.get("timeframes", {}).get("4h")
     if not tf_1h or not tf_4h:
@@ -55,7 +68,7 @@ def _price_choppy(snapshot: dict) -> bool:
     h1_range = h1_high - h1_low
     if h1_range <= 0:
         return False
-    return (overlap / h1_range) > 0.7
+    return (overlap / h1_range) > 0.85
 
 
 def _price_trending(snapshot: dict) -> tuple[str | None, float]:
@@ -93,19 +106,27 @@ def _price_trending(snapshot: dict) -> tuple[str | None, float]:
 def reclassify(snapshot: dict) -> str:
     """Re-classify the snapshot's regime from its data.
 
-    This is a v1 simplification. The function RE-CLASSIFIES from
-    price action and volatility, but trusts specific input regimes
-    (chop, manipulation_probable, extreme_volatility, low_liquidity)
-    because re-classifying those would require data we don't have
-    in the snapshot (e.g., order book depth for manipulation_probable).
+    Trust the input regime when it is a non-unknown value. Only when
+    the input is `unknown`, run the re-classification logic (choppy
+    detection, trend detection, range fallback). This keeps the
+    classifier as a safety net rather than a truth-overrider.
+
+    Veto regimes (chop, manipulation_probable, extreme_volatility,
+    low_liquidity) are always trusted as-is, even when the input is
+    unknown (because re-classifying those would require data we don't
+    have in the snapshot, e.g. order-book depth for manipulation_probable).
     """
     input_regime = snapshot.get("regime", "unknown")
 
     if input_regime in VETO_REGIMES:
         return input_regime
 
+    if input_regime != "unknown":
+        return input_regime
+
+    # input_regime is "unknown" -> re-classify from price action.
     daily_vol = _get_daily_vol(snapshot)
-    if input_regime == "unknown" and daily_vol is not None and daily_vol > EXTREME_VOLATILITY_THRESHOLD:
+    if daily_vol is not None and daily_vol > EXTREME_VOLATILITY_THRESHOLD:
         return "extreme_volatility"
 
     if _price_choppy(snapshot):

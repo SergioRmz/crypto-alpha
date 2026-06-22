@@ -10,8 +10,7 @@ Local, offline, deterministic. Same exit-code semantics as the P1 validator
 
 Usage:
     python scripts/validation/validate_scoring.py
-    python scripts/validation/validate_scoring.py --fixtures-dir <path> --contracts-dir <path>
-    python scripts/validation/validate_scoring.py <scored.json>  # validate a single file
+    python scripts/validation/validate_scoring.py <scored.json>  # single file
 """
 from __future__ import annotations
 
@@ -20,6 +19,11 @@ import json
 import sys
 from pathlib import Path
 from typing import Any
+
+# Make the `scripts` package importable when running this file directly.
+_PKG_PARENT = Path(__file__).resolve().parents[2]
+if str(_PKG_PARENT) not in sys.path:
+    sys.path.insert(0, str(_PKG_PARENT))
 
 try:
     import jsonschema
@@ -73,9 +77,52 @@ def _load_schema(contracts_dir: Path, schema_name: str, schema_cache: dict[str, 
     return schema
 
 
-def _load_ref_schema(contracts_dir: Path, ref_path: str, schema_cache: dict[str, dict]) -> dict:
-    """Resolve a relative $ref (e.g. confidence-score.schema.json)."""
-    return _load_schema(contracts_dir, ref_path, schema_cache)
+def _inline_and_strip(node: Any, schema_cache: dict[str, dict], root_defs: dict | None = None) -> None:
+    """Recursively inline sibling $refs and strip $id (offline-only)."""
+    if root_defs is None and isinstance(node, dict) and "$defs" not in node:
+        # First call on the root schema: create its $defs container.
+        node.setdefault("$defs", {})
+
+    if isinstance(node, dict):
+        ref = node.get("$ref")
+        if isinstance(ref, str) and not ref.startswith(("http://", "https://", "file://", "#")):
+            if ref in schema_cache:
+                inline = json.loads(json.dumps(schema_cache[ref]))
+                inline.pop("$id", None)
+                # Lift any $defs from the inlined schema up to the
+                # root_defs (renamed) so internal #/$defs/... refs
+                # resolve from the document root.
+                defs = inline.get("$defs")
+                target_defs = root_defs if root_defs is not None else node.setdefault("$defs", {})
+                if isinstance(defs, dict):
+                    for k in list(defs.keys()):
+                        new_key = f"{ref.replace('.schema.json', '')}__{k}"
+                        target_defs[new_key] = defs[k]
+
+                        def _update(n: Any) -> None:
+                            if isinstance(n, dict):
+                                r = n.get("$ref")
+                                if isinstance(r, str) and r == f"#/$defs/{k}":
+                                    n["$ref"] = f"#/$defs/{new_key}"
+                                for vv in n.values():
+                                    _update(vv)
+                            elif isinstance(n, list):
+                                for vv in n:
+                                    _update(vv)
+
+                        _update(inline)
+                inline.pop("$defs", None)
+                # Recurse on the inlined content (without lifting further
+                # $defs since they would already be at root).
+                _inline_and_strip(inline, schema_cache, target_defs)
+                node.pop("$ref")
+                node.update(inline)
+        node.pop("$id", None)
+        for v in list(node.values()):
+            _inline_and_strip(v, schema_cache, root_defs)
+    elif isinstance(node, list):
+        for v in node:
+            _inline_and_strip(v, schema_cache, root_defs)
 
 
 def _build_validator(
@@ -83,20 +130,20 @@ def _build_validator(
     schema_name: str,
     schema_cache: dict[str, dict],
 ) -> Draft202012Validator:
+    """Build a validator that resolves sibling $refs entirely offline.
+
+    We inline referenced schemas and lift their $defs to the root so
+    internal #/$defs/... refs resolve correctly. All $id fields are
+    stripped so the validator never attempts an HTTP fetch.
+    """
     schema = _load_schema(contracts_dir, schema_name, schema_cache)
-    # Pre-resolve any local $ref to sibling files.
-    resolver = jsonschema.RefResolver(
-        base_uri=schema.get("$id", ""),
-        referrer=schema,
-        store=schema_cache,
-    )
-    # Populate the cache with referenced sibling schemas.
-    for ref in ("confidence-score.schema.json", "risk-plan.schema.json"):
-        ref_path = contracts_dir / ref
-        if ref_path.exists() and ref not in schema_cache:
-            with ref_path.open("r", encoding="utf-8") as f:
-                schema_cache[ref] = json.load(f)
-    return Draft202012Validator(schema, resolver=resolver)
+    for sibling in ("confidence-score.schema.json", "risk-plan.schema.json"):
+        if sibling != schema_name:
+            _load_schema(contracts_dir, sibling, schema_cache)
+    # Ensure root has $defs before any inlining starts.
+    schema.setdefault("$defs", {})
+    _inline_and_strip(schema, schema_cache, schema["$defs"])
+    return Draft202012Validator(schema)
 
 
 def validate_file(fixture_path: Path, contracts_dir: Path = DEFAULT_CONTRACTS_DIR) -> int:
@@ -149,18 +196,10 @@ def main(argv: list[str] | None = None) -> int:
         nargs="?",
         type=Path,
         default=None,
-        help="Optional path to a single fixture JSON. If omitted, validates all fixtures in the default dir.",
+        help="Optional path to a single fixture JSON.",
     )
-    parser.add_argument(
-        "--fixtures-dir",
-        type=Path,
-        default=DEFAULT_FIXTURES_DIR,
-    )
-    parser.add_argument(
-        "--contracts-dir",
-        type=Path,
-        default=DEFAULT_CONTRACTS_DIR,
-    )
+    parser.add_argument("--fixtures-dir", type=Path, default=DEFAULT_FIXTURES_DIR)
+    parser.add_argument("--contracts-dir", type=Path, default=DEFAULT_CONTRACTS_DIR)
     args = parser.parse_args(argv)
     if args.fixture is not None:
         return validate_file(args.fixture, args.contracts_dir)

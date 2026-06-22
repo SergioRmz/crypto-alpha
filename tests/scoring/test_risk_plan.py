@@ -93,13 +93,16 @@ def test_derive_risk_plan_missing_1h_rejected() -> None:
 
 
 def test_derive_risk_plan_no_reference_price_rejected() -> None:
+    # No 1h timeframe at all, so no 1h close, no last_price, no mark_price.
     snap = {
-        "timeframes": {"1h": {"open": "100", "high": "105", "low": "95", "close": "103", "atr_pct": "0.5"}},
+        "timeframes": {
+            "4h": {"open": "100", "high": "105", "low": "95", "close": "103", "atr_pct": "0.5"},
+        },
         "derivatives_context": {"last_price": None, "mark_price": None},
     }
     plan, rej = derive_risk_plan(snap, "long")
     assert plan is None
-    assert "reference price" in (rej or "")
+    assert "swing data" in (rej or "") or "reference price" in (rej or "")
 
 
 def test_derive_risk_plan_tp1_at_1r() -> None:

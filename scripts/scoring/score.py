@@ -15,7 +15,12 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from scripts.scoring import confluence, regime_classifier, risk_plan
+# Make the `scripts` package importable when running this file directly.
+_PKG_PARENT = Path(__file__).resolve().parents[2]
+if str(_PKG_PARENT) not in sys.path:
+    sys.path.insert(0, str(_PKG_PARENT))
+
+from scripts.scoring import confluence, regime_classifier, risk_plan  # noqa: E402
 from scripts.scoring.decimal_format import score_value
 from scripts.scoring.strategy_version import (
     CURRENT_VERSION,

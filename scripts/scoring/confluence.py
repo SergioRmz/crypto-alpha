@@ -14,8 +14,15 @@ from __future__ import annotations
 
 import numpy as np
 
-from scripts.scoring.decimal_format import score_value
-from scripts.scoring.strategy_version import COMPONENT_WEIGHTS
+# Make the package importable when running as a script.
+import sys
+from pathlib import Path
+_PKG_PARENT = Path(__file__).resolve().parents[2]
+if str(_PKG_PARENT) not in sys.path:
+    sys.path.insert(0, str(_PKG_PARENT))
+
+from scripts.scoring.decimal_format import score_value  # noqa: E402
+from scripts.scoring.strategy_version import COMPONENT_WEIGHTS  # noqa: E402
 
 
 def _atr_pct_1h(snapshot: dict) -> float | None:

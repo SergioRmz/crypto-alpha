@@ -1,0 +1,49 @@
+{
+  "confidence_score": {
+    "bucket": "no_trade",
+    "components": [
+      {
+        "contribution": 35.5828,
+        "data_sufficient": true,
+        "max_value": 1.0,
+        "name": "trend_alignment",
+        "raw_value": 0.8896,
+        "reasoning": "1h pct=3.682%, 4h pct=5.828%, raw agreement=0.890.",
+        "weight": 0.4
+      },
+      {
+        "contribution": 0.0,
+        "data_sufficient": true,
+        "max_value": 1.0,
+        "name": "volatility_suitability",
+        "raw_value": 0.0,
+        "reasoning": "daily_vol=135.2%, hourly_atr=2.05%, raw suitability=0.000.",
+        "weight": 0.3
+      },
+      {
+        "contribution": 0.0,
+        "data_sufficient": true,
+        "max_value": 1.0,
+        "name": "structural_clarity",
+        "raw_value": 0.0,
+        "reasoning": "regime=extreme_volatility, raw clarity=0.000.",
+        "weight": 0.3
+      }
+    ],
+    "penalties": [
+      {
+        "deduction": 100.0,
+        "name": "regime_veto",
+        "reason": "regime 'extreme_volatility' is in the veto set; no trade"
+      }
+    ],
+    "schema_version": "0.1.0",
+    "strategy_version_ref": "v0.1.0",
+    "total_score": 0.0
+  },
+  "rejection_reason": "regime_veto: regime is 'extreme_volatility'",
+  "risk_plan": null,
+  "schema_version": "0.1.0",
+  "scored_at": "2026-06-21T12:00:00.000000Z",
+  "snapshot_ref": "specs/002-data-layer/fixtures/sol-perp-snapshot.json"
+}
