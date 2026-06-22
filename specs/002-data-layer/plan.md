@@ -2,7 +2,7 @@
 
 **Branch**: `002-data-layer` | **Date**: 2026-06-21 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `specs/002-data-layer/spec.md` (with 12 clarifications resolved in-session on 2026-06-21).
+**Input**: Feature specification from `specs/002-data-layer/spec.md` (with 12 clarifications resolved in-session on 2026-06-21). This is the P0→P1 handoff defined in `specs/001-profitable-trading-decision-domain/plan.md` (Domain Phasing table, P1 row).
 
 **Note**: This plan documents the data layer for crypto-alpha. It is the first spec to introduce runtime artifacts (a Python validator script), but it does NOT introduce data ingestion, scoring, persistence, or any exchange API. All data is synthetic fixtures; all validation is local and deterministic.
 

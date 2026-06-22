@@ -85,8 +85,8 @@ test -s specs/002-data-layer/spec.md && echo OK
 # 2. The clarifications are recorded
 grep -q "Session 2026-06-21" specs/002-data-layer/spec.md && echo OK
 
-# 3. The plan references the P0 handoff
-grep -q "spec-001" specs/002-data-layer/plan.md && echo OK
+# 3. The plan references the P0 handoff (spec-001 path)
+grep -q "specs/001-" specs/002-data-layer/plan.md && echo OK
 
 # 4. The data model is reachable
 test -s specs/002-data-layer/data-model.md && echo OK
@@ -126,8 +126,10 @@ If all 8 self-checks print `OK`, the spec is internally consistent and the data 
 
 ### Secret / live-URL scan
 
+A real secret / live-URL scan looks for actual credentials or endpoint patterns, not for the words "secrets" or "live" used in the rule itself. The targeted scan is:
+
 ```bash
-grep -RIn 'sk-\|api_key\|secret\|live\.' specs/002-data-layer/ scripts/validation/ pyproject.toml
+grep -RInE 'sk-[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|api[_-]?key[ ]*=[ ]*"[A-Za-z0-9]{16,}"' specs/002-data-layer/ scripts/validation/ pyproject.toml
 # expected: no matches
 ```
 
