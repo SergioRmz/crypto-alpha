@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-alpha.local/schemas/risk-plan.schema.json",
+  "title": "RiskPlan",
+  "description": "Derived trade management structure with swing-based entry, hybrid ATR+swing stop, 1R/2R/3R take-profit ladder. Emitted only for non-vetoed, directional scoring runs. P2 schema version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "strategy_version_ref",
+    "direction",
+    "entry_zone",
+    "stop_loss",
+    "take_profit_plan",
+    "risk_reward_expectations",
+    "max_intended_holding_period",
+    "invalidation_criteria"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "strategy_version_ref": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "direction": {
+      "type": "string",
+      "enum": ["long", "short"]
+    },
+    "entry_zone": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$",
+      "description": "Decimal string. The proposed entry price (8 decimal places)."
+    },
+    "stop_loss": {
+      "type": "string",
+      "pattern": "^[0-9]+(\\.[0-9]+)?$"
+    },
+    "take_profit_plan": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/TPLevel" }
+    },
+    "risk_reward_expectations": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/RRExpectation" }
+    },
+    "max_intended_holding_period": {
+      "type": "string",
+      "enum": ["1m", "5m", "15m", "1h", "4h", "1d"]
+    },
+    "invalidation_criteria": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "notes": {
+      "type": ["string", "null"],
+      "description": "Free text. MUST NOT contain advisory language."
+    }
+  },
+  "$defs": {
+    "TPLevel": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "price", "r_multiple"],
+      "properties": {
+        "level": { "type": "integer", "enum": [1, 2, 3] },
+        "price": {
+          "type": "string",
+          "pattern": "^[0-9]+(\\.[0-9]+)?$"
+        },
+        "r_multiple": {
+          "type": "number",
+          "enum": [1.0, 2.0, 3.0]
+        }
+      }
+    },
+    "RRExpectation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["level", "r_multiple"],
+      "properties": {
+        "level": { "type": "integer", "enum": [1, 2, 3] },
+        "r_multiple": {
+          "type": "number",
+          "enum": [1.0, 2.0, 3.0]
+        },
+        "hit_probability_pct": {
+          "type": ["number", "null"],
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    }
+  }
+}

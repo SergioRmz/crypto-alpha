@@ -1,11 +1,23 @@
 [project]
-name = "crypto-alpha-data-layer-validator"
-version = "0.1.0"
-description = "Local validator for crypto-alpha P1 data layer (JSON Schema contracts and fixtures)"
+name = "crypto-alpha"
+version = "0.2.0"
+description = "Personal, industrial-grade AI-assisted crypto futures trading intelligence."
 requires-python = ">=3.11"
 dependencies = [
     "jsonschema>=4.0,<5.0",
+    "numpy>=2.0,<3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<10.0",
+    "hypothesis>=6.0,<7.0",
 ]
 
 [tool.uv]
 managed = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+pythonpath = ["."]

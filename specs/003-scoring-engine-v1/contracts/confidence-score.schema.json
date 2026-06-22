@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-alpha.local/schemas/confidence-score.schema.json",
+  "title": "ConfidenceScore",
+  "description": "Decomposable confidence assessment with exactly 3 components in v1, a penalty array, a total_score in 0-100, a derived bucket, and a strategy_version_ref. P2 schema version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "strategy_version_ref",
+    "components",
+    "penalties",
+    "total_score",
+    "bucket"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "strategy_version_ref": {
+      "type": "string",
+      "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "components": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "items": { "$ref": "#/$defs/Component" }
+    },
+    "penalties": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/Penalty" }
+    },
+    "total_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "bucket": {
+      "type": "string",
+      "enum": ["no_trade", "low", "medium", "high", "exceptional"]
+    }
+  },
+  "$defs": {
+    "Component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "raw_value",
+        "max_value",
+        "weight",
+        "contribution",
+        "data_sufficient"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "trend_alignment",
+            "volatility_suitability",
+            "structural_clarity"
+          ]
+        },
+        "raw_value": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_value": {
+          "type": "number",
+          "const": 1
+        },
+        "weight": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "contribution": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "data_sufficient": {
+          "type": "boolean"
+        },
+        "reasoning": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "Penalty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "deduction", "reason"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "enum": [
+            "null_field_penalty",
+            "regime_veto",
+            "regime_unknown_penalty",
+            "safety_veto"
+          ]
+        },
+        "deduction": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "field_path": {
+          "type": ["string", "null"]
+        }
+      }
+    }
+  }
+}
