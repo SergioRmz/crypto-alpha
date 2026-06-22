@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://crypto-alpha.local/schemas/scoring-output.schema.json",
+  "title": "ScoringOutput",
+  "description": "Wrapper tying a snapshot_ref to a confidence_score and an optional risk_plan. P2 schema version 0.1.0.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "snapshot_ref",
+    "scored_at",
+    "confidence_score",
+    "risk_plan",
+    "rejection_reason"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "snapshot_ref": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Path or identifier of the input MarketContextSnapshot."
+    },
+    "scored_at": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,6})?Z$"
+    },
+    "confidence_score": { "$ref": "confidence-score.schema.json" },
+    "risk_plan": {
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "risk-plan.schema.json" }
+      ]
+    },
+    "rejection_reason": {
+      "oneOf": [
+        { "type": "null" },
+        { "type": "string", "minLength": 1 }
+      ]
+    },
+    "notes": {
+      "type": ["string", "null"]
+    }
+  }
+}
