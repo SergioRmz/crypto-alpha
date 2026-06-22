@@ -52,13 +52,22 @@ Code serves the specification, never the reverse. No material capability may be 
 ├── .specify/                   # Spec Kit governance (constitution, templates, workflows, commands)
 │   └── memory/constitution.md  # Project constitution (v1.0.0)
 ├── specs/                      # All feature specs live here
-│   └── 001-profitable-trading-decision-domain/
+│   ├── 001-profitable-trading-decision-domain/  # Merged (PR #1)
+│   └── 002-data-layer/         # In review (PR #2)
 │       ├── spec.md             # Feature specification
-│       └── checklists/
-│           └── requirements.md # Spec quality checklist
+│       ├── plan.md
+│       ├── research.md
+│       ├── data-model.md
+│       ├── quickstart.md
+│       ├── tasks.md
+│       ├── checklists/
+│       ├── contracts/          # JSON Schemas
+│       └── fixtures/           # Deterministic sample data
+├── scripts/
+│   └── validation/             # Local validators
+├── pyproject.toml              # Python project metadata (jsonschema dep)
 ├── AGENTS.md                   # Agent operating instructions
-├── README.md                   # This file
-└── (no runtime code yet)
+└── README.md                   # This file
 ```
 
 ## Constitutional Principles
@@ -78,10 +87,10 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
 | Area | Status |
 |---|---|
 | Constitution v1.0.0 | Ratified 2026-06-15 |
-| Spec 001 `profitable-trading-decision-domain` | Draft, quality checklist passed |
-| Plan, tasks, research, data-model, quickstart | Pending |
-| Runtime code | Not started (intentional) |
-| CI / validation scripts | Not started (intentional) |
+| Spec 001 `profitable-trading-decision-domain` | Merged (PR #1) |
+| Spec 002 `data-layer` | Draft PR open (branch `002-data-layer`) |
+| Runtime code | Validator + 3 JSON Schemas + 3 fixtures shipped in spec 002 |
+| CI / validation scripts | Local validator only (no CI yet) |
 | Remote | `https://github.com/SergioRmz/crypto-alpha.git` |
 
 ## Working With This Repository
@@ -90,6 +99,12 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
 - Read `AGENTS.md` for agent operating instructions.
 - Spec work goes under `specs/NNN-short-name/` following the templates in `.specify/templates/`.
 - Specs, plans, tasks, and implementation MUST be done in a feature branch, committed in coherent blocks, and merged through a pull request.
+- For data layer work (P1, spec 002), use the local validator:
+  ```bash
+  uv venv --python 3.11 .venv && source .venv/bin/activate && uv pip install -e .
+  python scripts/validation/validate_data_layer.py
+  ```
+  Expected: 3 `OK:` lines, exit 0.
 
 ## Future Stack (planned, not implemented)
 
