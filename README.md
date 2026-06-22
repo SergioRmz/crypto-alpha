@@ -53,7 +53,7 @@ Code serves the specification, never the reverse. No material capability may be 
 │   └── memory/constitution.md  # Project constitution (v1.0.0)
 ├── specs/                      # All feature specs live here
 │   ├── 001-profitable-trading-decision-domain/  # Merged (PR #1)
-│   └── 002-data-layer/         # In review (PR #2)
+│   └── 002-data-layer/         # Merged (PR #3)
 │       ├── spec.md             # Feature specification
 │       ├── plan.md
 │       ├── research.md
@@ -88,7 +88,7 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
 |---|---|
 | Constitution v1.0.0 | Ratified 2026-06-15 |
 | Spec 001 `profitable-trading-decision-domain` | Merged (PR #1) |
-| Spec 002 `data-layer` | Draft PR open (branch `002-data-layer`) |
+| Spec 002 `data-layer` | Merged (PR #3) |
 | Runtime code | Validator + 3 JSON Schemas + 3 fixtures shipped in spec 002 |
 | CI / validation scripts | Local validator only (no CI yet) |
 | Remote | `https://github.com/SergioRmz/crypto-alpha.git` |
@@ -99,7 +99,7 @@ The full constitution lives in [`.specify/memory/constitution.md`](.specify/memo
 - Read `AGENTS.md` for agent operating instructions.
 - Spec work goes under `specs/NNN-short-name/` following the templates in `.specify/templates/`.
 - Specs, plans, tasks, and implementation MUST be done in a feature branch, committed in coherent blocks, and merged through a pull request.
-- For data layer work (P1, spec 002), use the local validator:
+- For data layer validation (spec 002), use the local validator:
   ```bash
   uv venv --python 3.11 .venv && source .venv/bin/activate && uv pip install -e .
   python scripts/validation/validate_data_layer.py
